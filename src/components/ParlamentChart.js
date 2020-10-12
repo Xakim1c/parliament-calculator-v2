@@ -6,9 +6,10 @@ import HighchartsReact from 'highcharts-react-official'
 
 ItemSeriesModule(Highcharts);
 
-const generateChartData = (chartData) => {
+const generateChartData = (chartData, title) => {
 
     console.log('DRAW CHART')
+    console.log(chartData)
     const options = {
 
         chart: {
@@ -16,7 +17,7 @@ const generateChartData = (chartData) => {
         },
     
         title: {
-            text: 'Распределение мест в парламенте'
+            text: title
         },
     
         subtitle: {
@@ -50,11 +51,11 @@ const generateChartData = (chartData) => {
 const ParlamentChart = (props) => <HighchartsReact
   highcharts={Highcharts}
   constructorType={'chart'}
-  options={generateChartData(props.children[1])}
+  options={generateChartData(props.chartData, props.title)}
 />
 
 const areEqual = (prevProps, nextProps) => {
-    return (prevProps.children[1] === nextProps.children[1])
+    return (prevProps.chartData === nextProps.chartData)
     }
 
 export default React.memo(ParlamentChart, areEqual);
