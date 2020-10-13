@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/parliament-calculator-v2/precache-manifest.6f5bf10963e4be1bb87c348cd03048bc.js"
+  "/parliament-calculator-v2/precache-manifest.a4c0f4c6d1b1b7279527a0da780161f0.js"
 );
 
 self.addEventListener('message', (event) => {

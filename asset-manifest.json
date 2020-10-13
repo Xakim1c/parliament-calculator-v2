@@ -1,19 +1,18 @@
 {
   "files": {
     "main.css": "/parliament-calculator-v2/static/css/main.5f361e03.chunk.css",
-    "main.js": "/parliament-calculator-v2/static/js/main.212dad23.chunk.js",
-    "main.js.map": "/parliament-calculator-v2/static/js/main.212dad23.chunk.js.map",
+    "main.js": "/parliament-calculator-v2/static/js/main.cc281481.chunk.js",
+    "main.js.map": "/parliament-calculator-v2/static/js/main.cc281481.chunk.js.map",
     "runtime-main.js": "/parliament-calculator-v2/static/js/runtime-main.2e01dc1e.js",
     "runtime-main.js.map": "/parliament-calculator-v2/static/js/runtime-main.2e01dc1e.js.map",
-    "static/js/2.e9706255.chunk.js": "/parliament-calculator-v2/static/js/2.e9706255.chunk.js",
-    "static/js/2.e9706255.chunk.js.map": "/parliament-calculator-v2/static/js/2.e9706255.chunk.js.map",
+    "static/js/2.6325270b.chunk.js": "/parliament-calculator-v2/static/js/2.6325270b.chunk.js",
+    "static/js/2.6325270b.chunk.js.map": "/parliament-calculator-v2/static/js/2.6325270b.chunk.js.map",
     "index.html": "/parliament-calculator-v2/index.html",
-    "precache-manifest.6f5bf10963e4be1bb87c348cd03048bc.js": "/parliament-calculator-v2/precache-manifest.6f5bf10963e4be1bb87c348cd03048bc.js",
+    "precache-manifest.a4c0f4c6d1b1b7279527a0da780161f0.js": "/parliament-calculator-v2/precache-manifest.a4c0f4c6d1b1b7279527a0da780161f0.js",
     "service-worker.js": "/parliament-calculator-v2/service-worker.js",
     "static/css/main.5f361e03.chunk.css.map": "/parliament-calculator-v2/static/css/main.5f361e03.chunk.css.map",
-    "static/js/2.e9706255.chunk.js.LICENSE.txt": "/parliament-calculator-v2/static/js/2.e9706255.chunk.js.LICENSE.txt",
-    "static/media/PARTIES_RESULTS_REACT.csv": "/parliament-calculator-v2/static/media/PARTIES_RESULTS_REACT.a2cb1bc2.csv",
-    "static/media/logo.svg": "/parliament-calculator-v2/static/media/logo.5d5d9eef.svg",
+    "static/js/2.6325270b.chunk.js.LICENSE.txt": "/parliament-calculator-v2/static/js/2.6325270b.chunk.js.LICENSE.txt",
+    "static/media/PARTIES_RESULTS_REACT_LEVEL_ONE.csv": "/parliament-calculator-v2/static/media/PARTIES_RESULTS_REACT_LEVEL_ONE.42ccabd3.csv",
     "static/media/Бир Бол.png": "/parliament-calculator-v2/static/media/Бир Бол.d6ae1889.png",
     "static/media/Кыргызстан.png": "/parliament-calculator-v2/static/media/Кыргызстан.5f98b378.png",
     "static/media/Мекен Ынтымагы.png": "/parliament-calculator-v2/static/media/Мекен Ынтымагы.b9d0c5d3.png",
@@ -23,8 +22,8 @@
   },
   "entrypoints": [
     "static/js/runtime-main.2e01dc1e.js",
-    "static/js/2.e9706255.chunk.js",
+    "static/js/2.6325270b.chunk.js",
     "static/css/main.5f361e03.chunk.css",
-    "static/js/main.212dad23.chunk.js"
+    "static/js/main.cc281481.chunk.js"
   ]
 }
