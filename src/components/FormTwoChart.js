@@ -3,6 +3,8 @@ import ReactEcharts from "echarts-for-react";
 import 'echarts-gl';
 import EChartsStat from 'echarts-stat'
 
+import matchDistrict, {districts, matchDistrictShow} from '../util/districtsMatching'
+
 import * as d3 from 'd3'
 
 class FormTwoChart extends Component {
@@ -64,7 +66,7 @@ class FormTwoChart extends Component {
     }
 
     loadElectionsResultsData = () => {
-        d3.csv(require('../data/PARTIES_RESULTS_REACT.csv')).then(data => {
+        d3.csv(require('../data/PARTIES_RESULTS_REACT_LEVEL_ONE.csv')).then(data => {
             data.forEach(function(d) {
                 d.form2_percent = parseFloat(d.form2_percent)
                 d.total = parseFloat(d.total)
@@ -93,10 +95,7 @@ class FormTwoChart extends Component {
             }).then((resultsData) => {
 
             if(typeof(resultsData) !== undefined){
-                console.log("MOUNT")
                 this.voteResults = resultsData
-                console.log(this.voteResults);      
-                console.log(resultsData);   
                 
                 let formTwoPercents = []
                 resultsData.forEach(result => {
@@ -105,9 +104,7 @@ class FormTwoChart extends Component {
 
                 //this.bins = EChartsStat.histogram(formTwoPercents).customData.slice(1, 12);
 
-                 // set the parameters for the histogram
-                 console.log('D#')
- 
+                 // set the parameters for the histogram 
                  let histogram = d3.histogram().thresholds([0,5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115]);
                  this.bins = histogram(formTwoPercents);
                 
@@ -238,7 +235,11 @@ class FormTwoChart extends Component {
               ]
             }
 
-            this.setState({graphOption: graphOption})
+            console.log('GRAPH')
+            console.log(this.state.graphOption !== graphOption)
+            if(this.state.graphOption !== graphOption){
+                this.setState({graphOption: graphOption})
+            }                
     }
 
     componentDidMount() {
@@ -248,29 +249,26 @@ class FormTwoChart extends Component {
 
         this.zr.on('click', this.onChartClick);     
 
-        this.loadElectionsResultsData()               
+        if(this.bins.length == 0){
+            this.loadElectionsResultsData()    
+        }
+                   
     }
 
     onChartClick = (...rest) => {
-        //console.log('App:onClickChart', rest);
-        console.log('CLICK')
-        console.log(this.voteResults)
-        console.log(rest)
-
-        console.log('PERCENT')
-        
-        console.log(this.bins)
 
         if (typeof(rest[0].target) !== 'undefined'){
             let cutoff = this.getCutoffByIndex(rest[0].target.dataIndex)        
 
-            //Расчеты
-            let filteredResults =  this.voteResults.filter(function(result) {
+            //Фильтр
+            let filteredResults = this.voteResults.filter(function(result) {
                 return result.form2_percent < cutoff;
             });
 
             let resultsSummary = {}
+            let resultsSummaryDistricts = {}
 
+            //Для графика распределения
             filteredResults.forEach(result => {
                 Object.keys(result).map((key) => {
 
@@ -283,13 +281,50 @@ class FormTwoChart extends Component {
 
             })         
 
-            // console.log('TEST FILTER')
-            // console.log(this.voteResults)
             // console.log(filteredResults)
+
+            //Для карты районов
+            Object.entries(districts).forEach(([key, value]) => {
+
+                let partySum = {}
+
+                // console.log('FILTER')
+
+                // console.log(key)
+                // console.log(value)
+
+                let filteredDistrict = filteredResults.filter(function(result) {                    
+                    return result.level_one == value;
+                });
+
+                //Суммируем по партиями
+                filteredDistrict.forEach(result => {
+                    Object.keys(result).map((keyFiltered) => {
+    
+                        if(keyFiltered !== 'form2_percent' && keyFiltered !== 'level_one'){
+                          if (partySum.hasOwnProperty(keyFiltered)){
+                              partySum[keyFiltered] += result[keyFiltered]
+                          }else{
+                              partySum[keyFiltered] = result[keyFiltered]
+                          }          
+                        }  
+                    })      
+                })     
+
+                // console.log('FILTER RESULTS')
+                // console.log(partySum)
+                // console.log(filteredDistrict)
+
+                resultsSummaryDistricts[key] = partySum
+
+            })
+
+
             console.log('RESULT SUMMARY')
             console.log(resultsSummary)
+            console.log(resultsSummaryDistricts)
 
-            this.props.clickOnBar(resultsSummary)
+            this.props.clickOnBar(resultsSummary, resultsSummaryDistricts)
 
             //Потом покрасить
             this.updateGraph(rest[0].target.dataIndex) 
@@ -321,4 +356,10 @@ class FormTwoChart extends Component {
     }
 }
 
-export default FormTwoChart;
+//export default FormTwoChart;
+
+const areEqual = (prevProps, nextProps) => {
+    return (prevProps === nextProps)
+    }
+
+export default React.memo(FormTwoChart, areEqual);

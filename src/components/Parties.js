@@ -17,9 +17,14 @@ import ParlamentChart from '../components/ParlamentChart'
 import FormTwoChart from '../components/FormTwoChart'
 import { Typography } from '@material-ui/core';
 
-import matchParty from '../util/partyMathching'
+import matchParty, {matchPartyForMap} from '../util/partyMathching'
 
 import * as d3 from 'd3'
+
+import Map from './RegionsMap'
+import ReactTooltip from "react-tooltip";
+
+import {districts} from '../util/districtsMatching'
 
 //import { d3 } from "d3-scale-chromatic";
 
@@ -65,6 +70,9 @@ class Parties extends React.Component {
         defaultState.againstAllReached = false
         defaultState.onlyOnePartyPassed = false
 
+        defaultState.content = ''
+        //const [content, setContent] = useState("");
+
         //Form2 state
         defaultState.voteResults = ''
 
@@ -103,14 +111,21 @@ class Parties extends React.Component {
 
         this.state = defaultState;
         this.showCompareChart = false
+
+        this.resultsDataDisctricts = {}
+        this.resultsSummaryDistrictsBase = {}
       }    
 
     componentDidMount() { 
-        this.loadElectionsResultsData()               
+        
+        //Костыль
+        if(this.state.partiesBase['Биримдик'].voteResult == 0){
+            this.loadElectionsResultsData() 
+        }                       
     }
 
     loadElectionsResultsData = () => {
-        d3.csv(require('../data/PARTIES_RESULTS_REACT.csv')).then(data => {
+        d3.csv(require('../data/PARTIES_RESULTS_REACT_LEVEL_ONE.csv')).then(data => {
             data.forEach(function(d) {
                 d.form2_percent = parseFloat(d.form2_percent)
                 d.total = parseFloat(d.total)
@@ -158,53 +173,168 @@ class Parties extends React.Component {
 
                 Object.keys(resultsSummary).map((key) => {
 
-                    // console.log(matchParty([key]))
-                    // console.log(event[key])
                     if (parties.hasOwnProperty(matchParty([key]))){
 
                         parties[matchParty([key])].voteResult = resultsSummary[key] / resultsSummary.total * 100   
                         
-                        //console.log(key)
                     }  
                 })  
 
-                //console.log(parties)
-
                 this.setState( {partiesBase: parties} )
+
+
+                console.log('FIND BUG')
+                console.log(parties)
 
                 //Percents left
                 this.calculateResults('partiesBase')
+
+                //Для карты районов
+                let resultsDataDisctrictsBase = {}
+                Object.entries(districts).forEach(([key, value]) => {
+
+                    let partySum = {}
+
+                    let filteredDistrict = resultsData.filter(function(result) {                    
+                        return result.level_one == value;
+                    });
+
+                    //Суммируем по партиями
+                    filteredDistrict.forEach(result => {
+                        Object.keys(result).map((keyFiltered) => {
+        
+                            if(keyFiltered !== 'form2_percent' && keyFiltered !== 'level_one'){
+                            if (partySum.hasOwnProperty(keyFiltered)){
+                                partySum[keyFiltered] += result[keyFiltered]
+                            }else{
+                                partySum[keyFiltered] = result[keyFiltered]
+                            }          
+                            }  
+                        })      
+                    })     
+
+                    // console.log('FILTER RESULTS')
+                    // console.log(partySum)
+                    // console.log(filteredDistrict)
+
+                    resultsDataDisctrictsBase[key] = partySum
+                })
+
+                this.resultsDataDisctrictsBase = resultsDataDisctrictsBase
+                
             }                  
         });                      
     }
 
-    handleClickFormTwoChart = (event) => {
-        //console.log('HAPPY!')
-        //console.log(event)
+    createTooltipTable = () => {
+
+        console.log('CREATE TOOLTIP')
+        console.log(this.state.content)
+        console.log(this.resultsDataDisctricts)
+        console.log(this.resultsDataDisctrictsBase)
+
+        if(this.state.content === ''){
+            console.log('BUG')
+            return (<a
+                        
+                ></a>)
+        }
+
+        if(Object.keys(this.resultsDataDisctricts).length == 0){
+            let tooltipData = this.resultsDataDisctrictsBase[this.state.content] 
+            let total = tooltipData['total']
+            //delete tooltipData['total']
+
+            return (<a
+                            
+                    >                   
+                        <h3>{this.state.content}</h3>
+            
+                        <table style={{width:'100%', borderCollapse: 'collapse'}}>
+                        <tr>
+                        <th>Партия</th>
+                        <th>Процент</th>
+                        </tr>
+
+                        {Object.keys(tooltipData).map(party => (
+                            <tr>
+                            <td>{matchPartyForMap(party)}</td>
+                            <td>{(tooltipData[party] / total * 100).toFixed(2) + '%'} </td>
+                            </tr>
+                        ))}
+                        
+                    </table>
+            
+                </a>)
+
+        }else{
+
+            console.log('DIFF')
+            let tooltipDataBase = this.resultsDataDisctrictsBase[this.state.content] 
+            let totalBase = tooltipDataBase['total']
+
+            let tooltipData = this.resultsDataDisctricts[this.state.content] 
+            let total = tooltipData['total']
+            //delete tooltipData['total']
+            return (<a
+                        
+                >                   
+                    <h3>{this.state.content}</h3>
+        
+                    <table style={{width:'100%', borderCollapse: 'collapse'}}>
+                    <tr>
+                    <th>Партия</th>
+                    <th>ДО</th>
+                    <th>ПОСЛЕ</th>
+                    </tr>
+
+                    {Object.keys(tooltipDataBase).map(party => (
+                        <tr>
+                        <td>{matchPartyForMap(party)}</td>
+                        <td>{(tooltipDataBase[party] / totalBase * 100).toFixed(2) + '%'} </td>
+                        <td>{(tooltipData[party] / total * 100).toFixed(2) + '%'} </td>
+                        </tr>
+                    ))}
+                    
+                </table>
+        
+            </a>)
+            
+        }        
+    }
+
+
+    handleContentTooltip = (content) => {
+        this.setState({content: content})
+    }
+
+    handleClickFormTwoChart = (resultsData, resultsDataDisctricts) => {
 
         this.showCompareChart = true
         const parties = {...this.state.parties}
 
-        //console.log(parties)
+        console.log('CLICK')
+        console.log(parties)
 
-        Object.keys(event).map((key) => {
+        //График распределения
+        Object.keys(resultsData).map((key) => {
 
-            // console.log(matchParty([key]))
-            // console.log(event[key])
             if (parties.hasOwnProperty(matchParty([key]))){
-
-                parties[matchParty([key])].voteResult = event[key] / event.total * 100   
-                
-                //console.log(key)
+                parties[matchParty([key])].voteResult = resultsData[key] / resultsData.total * 100                   
             }  
          })  
 
-         //console.log(parties)
+        if (this.state.parties !== parties){
+            this.setState( {parties: parties} )
 
-        this.setState( {parties: parties} )
+            //Percents left
+            this.calculateResults('parties')
+        }
 
-        //Percents left
-        this.calculateResults('parties')
+        //Карта
+         //Для карты районов
+        this.resultsDataDisctricts = resultsDataDisctricts   
+    
     }
 
     voteNumberOnChange = (event) => {
@@ -303,7 +433,6 @@ class Parties extends React.Component {
                 let distributeLeft = electionsConfig.totalChairs - totalChairs
 
                 sortedParties.forEach(function (item) {
-                    //console.log(item[0]);
 
                     if (distributeLeft > 0){
                         parties[item[0]].parlamentResultChairs += 1 
@@ -339,14 +468,8 @@ class Parties extends React.Component {
                         if (party == monopolyParty){
                             parties[party].parlamentResultChairs = electionsConfig.maxChairsForParty
                         }else{  
-                            // console.log("START MONOPOLY")               
-                            // console.log(monopolyChairs)     
-                            // console.log(monopolyPercent) 
-                            // console.log(voteResult)     
-                            
+ 
                             let parlamentResultPercents = voteResult * 100 / (totalPassedParlamentPercent - monopolyPercent)  
-
-                            //console.log(Math.floor((monopolyChairs-electionsConfig.maxChairsForParty) * parlamentResultPercents / 100)) 
                             
                             parties[party].monopolyResidual =  (((monopolyChairs-electionsConfig.maxChairsForParty) * parlamentResultPercents / 100) - (Math.floor((monopolyChairs-electionsConfig.maxChairsForParty) * parlamentResultPercents / 100))).toFixed(2)
                             parties[party].parlamentResultChairs += Math.floor((monopolyChairs-electionsConfig.maxChairsForParty) * parlamentResultPercents / 100)
@@ -362,10 +485,6 @@ class Parties extends React.Component {
                     let sortedParties = this.sortProperties(parties, 'monopolyResidual', true, true)
 
                     let distributeLeft = electionsConfig.totalChairs - totalChairs
-
-                    //console.log('CHECK');
-                    //console.log(distributeLeft);
-                    //console.log(sortedParties);
 
                     sortedParties.forEach(function (item) {                        
 
@@ -428,21 +547,18 @@ class Parties extends React.Component {
             this.setState( {againstAllReached: true} )
         }
         
-        this.setState( {[partiesSet]: parties} )
+        if(this.state[partiesSet] !== parties){
+            this.setState( {[partiesSet]: parties} )
+        }        
     }
 
     prepareChartData = (partiesSet) => {
 
         let chartData = []
-        //var colours = d3.scaleOrdinal(d3.schemeCategory10)
-	    //.domain(["foo", "bar", "baz", "foobar"]);
-  
-        //console.log(colours("foobar"))
 
         let listOfColors = ['#ff4000','#ff8000','#ffbf00','#ffff00','#bfff00','#80ff00','#40ff00','#00ff00','#00ff40','#00ff80','#00ffbf','#00ffff','#00bfff','#0080ff','#0040ff','#0000ff','#4000ff','#8000ff','#bf00ff','#ff00ff','#ff00bf','#ff0080','#ff0040','#ff0000']
 
         Object.keys(this.state[partiesSet]).map((party) => {
-
             
             let chairsNumber = this.state[partiesSet][party].parlamentResultChairs
 
@@ -466,24 +582,19 @@ class Parties extends React.Component {
             } 
                         
         })    
-        //console.log(chartData)
-        //chartData = [['TEST', 25, '#ffbf00', 'TEST'], ['TEST', 25, '#ffbf00', 'TEST'], ['TEST', 25, '#ffbf00', 'TEST'], ['TEST', 25, '#ffbf00', 'TEST']]
+       
         return chartData
     }
 
 
     render() {       
 
-        console.log("STATE RENDER")
-        console.log(this.state)
-
         const isAgainstAllReached = this.state.againstAllReached;
         const onlyOnePartyPassed = this.state.onlyOnePartyPassed;
         const { classes } = this.props;
 
-        //console.log(this.prepareChartData())
         return (
-            <div> 
+            <div>                 
   
                 <Grid container justify="center">
                     Хотите увидеть что было бы если анулировать результаты голосования на участках с аномальным показателем по Форме2? 
@@ -518,7 +629,28 @@ class Parties extends React.Component {
                     }
                 </Grid>
 
-                <Typography variant="body1">Осталось распределить: {this.state.percentsLeft}</Typography>                
+                <Grid container justify="center">
+                    Для просмотра распределения процентов по областям - наведите на область                
+                </Grid>
+                <Grid container justify="center">
+                    <div style={{width: 1000, height: 500}}>
+                        <Map setTooltipContent={this.handleContentTooltip} />        
+                    </div>                    
+                </Grid>
+
+                <ReactTooltip
+                        type='error'
+                        multiline={true}>
+                        
+                        <div>
+
+                            {this.createTooltipTable()}
+
+                        </div>   
+                        
+                </ReactTooltip>
+
+                {/* <Typography variant="body1">Осталось распределить: {this.state.percentsLeft}</Typography>                 */}
 
                 <b>{isAgainstAllReached ? electionsConfig.against_all_reached_message : ''}</b>
 
@@ -615,4 +747,11 @@ class Parties extends React.Component {
         }
     }    
 
-export default withStyles(styles, { withTheme: true })(Parties)
+//export default withStyles(styles, { withTheme: true })(Parties)
+
+const areEqual = (prevProps, nextProps) => {
+
+    return (prevProps.parties === nextProps.parties)
+    }
+
+export default React.memo(withStyles(styles, { withTheme: true })(Parties), areEqual);
