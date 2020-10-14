@@ -1,17 +1,17 @@
 {
   "files": {
     "main.css": "/parliament-calculator-v2/static/css/main.5f361e03.chunk.css",
-    "main.js": "/parliament-calculator-v2/static/js/main.21d9b838.chunk.js",
-    "main.js.map": "/parliament-calculator-v2/static/js/main.21d9b838.chunk.js.map",
+    "main.js": "/parliament-calculator-v2/static/js/main.0e377377.chunk.js",
+    "main.js.map": "/parliament-calculator-v2/static/js/main.0e377377.chunk.js.map",
     "runtime-main.js": "/parliament-calculator-v2/static/js/runtime-main.2e01dc1e.js",
     "runtime-main.js.map": "/parliament-calculator-v2/static/js/runtime-main.2e01dc1e.js.map",
-    "static/js/2.8ba6598b.chunk.js": "/parliament-calculator-v2/static/js/2.8ba6598b.chunk.js",
-    "static/js/2.8ba6598b.chunk.js.map": "/parliament-calculator-v2/static/js/2.8ba6598b.chunk.js.map",
+    "static/js/2.fa89424c.chunk.js": "/parliament-calculator-v2/static/js/2.fa89424c.chunk.js",
+    "static/js/2.fa89424c.chunk.js.map": "/parliament-calculator-v2/static/js/2.fa89424c.chunk.js.map",
     "index.html": "/parliament-calculator-v2/index.html",
-    "precache-manifest.18f3bc903fd6600cd4a28c4039124b11.js": "/parliament-calculator-v2/precache-manifest.18f3bc903fd6600cd4a28c4039124b11.js",
+    "precache-manifest.b760aa945062563cdbc95b2367e77f48.js": "/parliament-calculator-v2/precache-manifest.b760aa945062563cdbc95b2367e77f48.js",
     "service-worker.js": "/parliament-calculator-v2/service-worker.js",
     "static/css/main.5f361e03.chunk.css.map": "/parliament-calculator-v2/static/css/main.5f361e03.chunk.css.map",
-    "static/js/2.8ba6598b.chunk.js.LICENSE.txt": "/parliament-calculator-v2/static/js/2.8ba6598b.chunk.js.LICENSE.txt",
+    "static/js/2.fa89424c.chunk.js.LICENSE.txt": "/parliament-calculator-v2/static/js/2.fa89424c.chunk.js.LICENSE.txt",
     "static/media/PARTIES_RESULTS_REACT_LEVEL_ONE.csv": "/parliament-calculator-v2/static/media/PARTIES_RESULTS_REACT_LEVEL_ONE.42ccabd3.csv",
     "static/media/Бир Бол.png": "/parliament-calculator-v2/static/media/Бир Бол.d6ae1889.png",
     "static/media/Кыргызстан.png": "/parliament-calculator-v2/static/media/Кыргызстан.5f98b378.png",
@@ -22,8 +22,8 @@
   },
   "entrypoints": [
     "static/js/runtime-main.2e01dc1e.js",
-    "static/js/2.8ba6598b.chunk.js",
+    "static/js/2.fa89424c.chunk.js",
     "static/css/main.5f361e03.chunk.css",
-    "static/js/main.21d9b838.chunk.js"
+    "static/js/main.0e377377.chunk.js"
   ]
 }
