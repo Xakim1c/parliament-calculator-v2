@@ -12,7 +12,7 @@ function App() {
   return (
     <div className="App">     
 
-      <Typography variant="h6">{electionsConfig.distribute_all_votes_message}</Typography>
+      {/* <Typography variant="h6">{electionsConfig.distribute_all_votes_message}</Typography> */}
       <Parties> </Parties>
 	
     </div>

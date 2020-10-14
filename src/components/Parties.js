@@ -640,6 +640,7 @@ class Parties extends React.Component {
 
                 <ReactTooltip
                         type='error'
+                        // place='top'
                         multiline={true}>
                         
                         <div>

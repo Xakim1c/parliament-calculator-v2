@@ -32,7 +32,7 @@ const MapChart = ({ setTooltipContent }) => {
               geographies.map(geo => (
                 <Geography
                   key={geo.rsmKey}
-                  stroke="#EAEAEC"
+                  stroke="#8B4513"
                   geography={geo}
                   onMouseEnter={() => {
                     console.log(geo)
@@ -45,7 +45,7 @@ const MapChart = ({ setTooltipContent }) => {
                   }}
                   style={{
                     default: {
-                      fill: "#D6D6DA",
+                      fill: "#DEB887",
                       outline: "none"
                     },
                     hover: {
@@ -62,11 +62,47 @@ const MapChart = ({ setTooltipContent }) => {
             }
           </Geographies>
 
-          {/* <Marker coordinates={[74.5,41.2]} fill="#777">
-          <text textAnchor="middle" fill="#F53">
-            ОШ
-          </text>
-        </Marker> */}
+          <Marker coordinates={[75.71,41.41]} fill="#777">
+            <text textAnchor="middle" fill="#000000">
+              Нарынская область
+            </text>
+          </Marker>
+
+          <Marker coordinates={[78.00,42.23]} fill="#777">
+            <text textAnchor="middle" fill="#000000">
+              Иссык-Кульская область
+            </text>
+          </Marker>
+
+          <Marker coordinates={[74.5,42.55]} fill="#777">
+            <text textAnchor="middle" fill="#000000">
+              Чуйская область
+            </text>
+          </Marker>
+
+          <Marker coordinates={[72.2, 42.35]} fill="#777">
+            <text textAnchor="middle" fill="#000000">
+              Таласская область
+            </text>
+          </Marker>
+
+          <Marker coordinates={[72.3, 41.65]} fill="#777">
+            <text textAnchor="middle" fill="#000000">
+              Джалал-Абадская область
+            </text>
+          </Marker>
+
+          <Marker coordinates={[73.4, 40.25]} fill="#777">
+            <text textAnchor="middle" fill="#000000">
+              Ошская область
+            </text>
+          </Marker>
+
+          <Marker coordinates={[70.7, 39.75]} fill="#777">
+            <text textAnchor="middle" fill="#000000">
+              Баткенская область
+            </text>
+          </Marker>
 
         </ZoomableGroup>
       </ComposableMap>
